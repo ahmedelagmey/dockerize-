@@ -1,0 +1,29 @@
+#base image import
+
+FROM node:latest As node 
+
+#creating application directory
+
+RUN mkdir  -p /app
+
+WORKDIR /app
+
+#copy package.json application directory
+
+COPY package.json /app/
+
+#install (node package manager "npm") inside app directory
+
+RUN npm install
+
+COPY . /app/ 
+
+#run angular production bundle
+
+RUN npm run build --prod
+
+#web server initailze
+
+FROM nginx:alpine
+
+COPY --from=node /app/dist/"Your-Application-Name" /usr/share/nginx/html 
